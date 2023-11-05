@@ -19,9 +19,10 @@ const int MAX_MATRIX_SIZE = 10000;
 template<typename T>
 class TDynamicVector
 {
-protected:
+public:
   size_t sz;
-  T* pMem;
+public:
+    T* pMem;
 public:
   TDynamicVector(size_t size = 1) : sz(size)
   {
@@ -76,6 +77,7 @@ public:
               pMem = nullptr;
           }
           else {
+
               sz = v.sz;
               pMem = new T[sz];
               std::copy(v.pMem, v.pMem + sz, pMem);
@@ -103,14 +105,11 @@ public:
   }
 
   // индексация
-  T& operator[](size_t ind)
+  T& operator[](int ind)
   {
-      return pMem[ind];
+      return this->pMem[ind];
   }
-  const T& operator[](size_t ind) const
-  {
-      return pMem[ind];
-  }
+
   // индексация с контролем
   T& at(size_t ind)
   {
@@ -221,7 +220,7 @@ public:
       else {
           T sum = 0;
           for (int i = 0; i < sz; i++) {
-              sum += pMem[i] * v.pMem[i];
+              sum = sum + pMem[i] * v.pMem[i];
           }
           return sum;
       }
@@ -270,6 +269,7 @@ public:
 
   using TDynamicVector<TDynamicVector<T>>::operator[];
 
+
   // сравнение
   bool operator==(const TDynamicMatrix& m) const noexcept
   {
@@ -288,7 +288,7 @@ public:
   TDynamicMatrix operator*(const T& val)
   {
       for (int i = 0; i < sz; i++) {
-          pMem[i] *= val;
+          pMem[i] = pMem[i] * val;
       }
       return *this;
   }
@@ -296,13 +296,13 @@ public:
   // матрично-векторные операции
   TDynamicVector<T> operator*(const TDynamicVector<T>& v)
   {
-      if (sz != m.sz) {
+      if (sz != v.sz) {
           throw "sizes of Vectors are different";
       }
       else {
-          TDynamicVector sum = new TDynamicVector[sz];
+          TDynamicVector<T> sum(sz);
           for (int i = 0; i < sz; i++) {
-              sum += pMem[i] * v.pMem[i];
+              sum = sum + pMem[i] * v.pMem[i];
           }
           return sum;
       }
@@ -335,7 +335,7 @@ public:
           return tmp;
       }
   }
-  TDynamicMatrix operator*(const TDynamicMatrix& m)
+  TDynamicMatrix<T> operator*(const TDynamicMatrix<T> & m)
   {
       if (sz != m.sz) {
           throw "sizes of Matrix are different";
@@ -343,15 +343,15 @@ public:
       else {
           TDynamicMatrix tmp(sz);
           for (int i = 0; i < sz; i++) {
-              for (int j = 0; j < sz; i++) {
+              for (int j = i + 1; j < sz; j++) {
                       int q = m.pMem[i][j];
                       m.pMem[i][j] = m.pMem[j][i];
                       m.pMem[j][i] = q;
               }
           }
           for (int i = 0; i < sz; i++) {
-              for (int j = 0; j < sz; i++) {
-                  tmp.pMem[i][j] = pMem[i] * m.pMem[i];
+              for (int j = 0; j < sz; j++) {
+                  tmp.pMem[i][j] = pMem[i] * m.pMem[j];
               }
           }
           return tmp;

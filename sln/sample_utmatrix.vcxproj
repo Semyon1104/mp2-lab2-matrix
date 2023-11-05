@@ -95,6 +95,9 @@
   <ItemGroup>
     <ClInclude Include="..\include\tmatrix.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\samples\sample_matrix.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
